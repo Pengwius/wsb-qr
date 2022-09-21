@@ -1,0 +1,37 @@
+.navbar {
+    margin: 0;
+    background-color: #fff176;
+    height: 70px;
+    width: 100%;
+}
+
+.logo {
+    margin: 0;
+    padding-left: 70px;
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.options {
+    float: right;
+    padding-right: 70px;
+}
+
+.register {
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.login {
+    background-color: white;
+    padding: 10px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-left: 20px;
+    cursor: pointer;
+    display: inline;
+    position: relative;
+}
