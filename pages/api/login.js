@@ -23,6 +23,7 @@ import clientPromise from "../../lib/mongodb";
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'lib/session'
 import { NextApiRequest, NextApiResponse } from 'next'
+const randtoken = require('rand-token');
 
 async function loginRoute(req, res) {
   const client = await clientPromise;
@@ -37,19 +38,37 @@ async function loginRoute(req, res) {
       .collection("users")
       .insertOne({ email: req.body["email"], age: req.body["age"], points: 0});
 
-    const userSession = { isLoggedIn: true, email : req.body["email"], points: 0 }
-    req.session.user = userSession
-    await req.session.save()
-    res.redirect("/home")      
-  } else {
-    const useGetPoints = await db
+    const token = randtoken.generate(40);
+    await db
       .collection("users")
-      .findOne({ email: req.body["email"] });
+      .updateOne({ email: req.body["email"] }, { $set: { token: token } });
 
-    const userSession = { isLoggedIn: true, email : req.body["email"], points: useGetPoints.points }
-    req.session.user = userSession
-    await req.session.save()
-    res.redirect("/home")
+    console.log("http://localhost:3000/api/loginToken?email=" + req.body["email"] + "?token=" + token);
+
+    res.redirect("/check-email")
+  } else {
+    if(user.age !== req.body["age"]) {
+      res.redirect("/")
+      return
+    }
+
+    const token = randtoken.generate(40);
+    await db
+      .collection("users")
+      .updateOne({ email: req.body["email"] }, { $set: { token: token } });
+    
+    console.log("http://localhost:3000/api/loginToken?email=" + req.body["email"] + "?token=" + token);
+
+    res.redirect("/check-email")
+
+    // const useGetPoints = await db
+    //   .collection("users")
+    //   .findOne({ email: req.body["email"] });
+
+    // const userSession = { isLoggedIn: true, email : req.body["email"], points: useGetPoints.points }
+    // req.session.user = userSession
+    // await req.session.save()
+    // res.redirect("/home")
   }
 }
 
